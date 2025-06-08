@@ -1,0 +1,40 @@
+# Elaborazione audio
+librosa>=0.9.2
+soundfile>=0.10.3
+pydub>=0.25.1
+PyAudio>=0.2.11
+audioread>=2.1.9
+
+# Deep Learning e supporto CUDA
+torch>=1.9.0
+torchaudio>=0.9.0
+torchvision>=0.10.0
+
+# Riconoscimento vocale
+SpeechRecognition>=3.8.1
+vosk>=0.3.32
+whisper>=1.0  # OpenAI Whisper
+
+# Sintesi vocale
+phonemizer>=2.2.1
+g2p-en>=2.1.0
+inflect>=5.3.0
+
+# Modelli di sintesi vocale
+# Nota: NeMo e altri framework specifici potrebbero richiedere installazione separata
+
+# Interfaccia grafica
+PyQt5>=5.15.4
+pyqtgraph>=0.12.3
+
+# Utilità
+requests>=2.25.1
+pyyaml==8.0.1
+tensorboard>=2.5.0
+numba>=0.53.1
+scikit-learn>=0.24.2
+
+# Ottimizzazione CUDA
+nvidia-ml-py3>=7.352.0
+numpy==1.23.5
+scipy
