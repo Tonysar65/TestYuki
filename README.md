@@ -2,7 +2,7 @@
 
 Un'applicazione Python per la creazione di un'intelligenza artificiale parlante che utilizza file audio come riferimento vocale. Questo progetto permette di clonare una voce da un file audio e utilizzarla per sintetizzare nuovo parlato a partire da testo.
 
-## Requisiti di Sistema
+## Requisiti minimi di sistema
 
 - **Sistema Operativo**: Windows 10
 - **GPU**: NVIDIA GeForce GTX 1060 3GB o superiore
@@ -12,7 +12,7 @@ Un'applicazione Python per la creazione di un'intelligenza artificiale parlante 
 
 ## Installazione
 
-### 1. Installazione di Python 3.9
+### 1. Installazione di Python 3.9++
 
 Se non hai già Python 3.9 installato:
 
