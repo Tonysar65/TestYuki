@@ -1,0 +1,51 @@
+{
+  "model_name": "example_model",
+  "input_dim": 80,
+  "hidden_dim": 512,
+  "embedding_dim": 512,
+  "vocab_size": 1000,
+  "created_at": 1749838059.447002,
+  "device": "cuda",
+  "version": "1.0",
+  "description": "Modello vocale di esempio per TestYuki",
+  "training_info": {
+    "epochs": 100,
+    "learning_rate": 0.001,
+    "batch_size": 32,
+    "optimizer": "Adam"
+  },
+  "audio_info": {
+    "sample_rate": 22050,
+    "n_mels": 80,
+    "n_fft": 1024,
+    "hop_length": 256,
+    "win_length": 1024
+  },
+  "model_architecture": {
+    "voice_encoder": {
+      "type": "VoiceEncoder",
+      "input_dim": 80,
+      "hidden_dim": 512,
+      "embedding_dim": 512
+    },
+    "text_encoder": {
+      "type": "TextEncoder",
+      "vocab_size": 1000,
+      "embedding_dim": 512,
+      "hidden_dim": 512
+    },
+    "decoder": {
+      "type": "Decoder",
+      "input_dim": 1024,
+      "hidden_dim": 512,
+      "output_dim": 80
+    }
+  },
+  "file_info": {
+    "model_file": "model.pt",
+    "metadata_file": "metadata.json",
+    "file_size_bytes": 30182660,
+    "checksum": "3ce7c2f99845b25a637d6e4f61b122b0",
+    "format": "simulated_pytorch"
+  }
+}
