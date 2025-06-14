@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Scheda per la clonazione vocale.
 Permette all'utente di caricare un file audio di riferimento e addestrare un modello vocale.
@@ -311,4 +308,3 @@ class VoiceCloningTab(QWidget):
                 "Addestramento Completato",
                 f"Il modello '{self.model_name_edit.text()}' è stato addestrato con successo."
             )
-

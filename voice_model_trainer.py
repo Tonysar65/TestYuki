@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Modulo per l'addestramento del modello vocale.
 Si occupa di addestrare un modello di sintesi vocale basato sulle caratteristiche estratte.

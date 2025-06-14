@@ -1,11 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""
+""""
 Controller principale per l'applicazione AI Parlante.
 Coordina i vari moduli e gestisce il flusso di lavoro dell'applicazione.
 """
-
+import json
 import os
 import logging
 import threading
@@ -27,10 +24,18 @@ class ProcessState(Enum):
 class Controller:
     """Controller principale dell'applicazione."""
 
-    def __init__(self, input_audio: Optional[str] = None,
+    '''def __init__(self, input_audio: Optional[str] = None,
                  output_dir: Optional[str] = None,
                  model_dir: Optional[str] = None,
-                 debug: bool = False):
+                 debug: bool = False):'''
+
+    def __init__(self, input_audio=None, output_dir="output", model_dir="models", debug=False):
+        self.input_audio = input_audio
+        self.output_dir = output_dir
+        self.model_dir = model_dir
+        self.debug = debug
+        self.processing_cancelled = False
+
         """
         Inizializza il controller.
 
@@ -79,6 +84,9 @@ class Controller:
 
         # Inizializza i moduli
         self._initialize_modules()
+
+        #
+        self.processing_cancelled = False  # reset per la prossima esecuzione
 
     def _initialize_modules(self):
         """Inizializza i vari moduli dell'applicazione."""
@@ -365,7 +373,7 @@ class Controller:
             self._update_status(f"Errore: {str(e)}")
             return False
 
-    def get_available_models(self) -> List[str]:
+    '''def get_available_models(self) -> List[str]:
         """
         Ottiene la lista dei modelli vocali disponibili.
 
@@ -380,7 +388,32 @@ class Controller:
             return models
         except Exception as e:
             self.logger.error(f"Errore durante il recupero dei modelli: {e}")
-            return []
+            return []'''
+
+    def get_available_models(self):
+        models = []
+
+        if not os.path.isdir(self.model_dir):
+            return models
+
+        for name in os.listdir(self.model_dir):
+            model_path = os.path.join(self.model_dir, name)
+            if os.path.isdir(model_path):
+                model_file = os.path.join(model_path, "model.pt")
+                metadata_file = os.path.join(model_path, "metadata.json")
+
+                if os.path.exists(model_file) and os.path.exists(metadata_file):
+                    try:
+                        with open(metadata_file, "r") as f:
+                            metadata = json.load(f)
+                        if "model_name" in metadata:
+                            models.append(name)
+                    except Exception as e:
+                        if self.debug:
+                            print(f"Errore nella lettura dei metadati per {name}: {e}")
+                        continue  # ignora directory con metadati corrotti
+
+        return models
 
     def _run_in_thread(self, target_function):
         """
@@ -421,4 +454,9 @@ class Controller:
             self.synthesizer.cleanup()
 
         self.logger.info("Pulizia completata")
+
+    def cancel_processing(self):
+        """Metodo per interrompere un'elaborazione in corso."""
+        self.processing_cancelled = True
+        logging.getLogger("ai_parlante.controller").info("Elaborazione annullata dall'utente")
 

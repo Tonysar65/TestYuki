@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Applicazione console per AI Parlante.
 Permette di utilizzare l'applicazione da riga di comando senza interfaccia grafica.

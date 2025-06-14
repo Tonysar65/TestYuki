@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Test per verificare le correzioni dei problemi di salvataggio e caricamento del modello.
 """

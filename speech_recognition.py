@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Modulo per il riconoscimento vocale.
 Si occupa di trascrivere il parlato in testo.

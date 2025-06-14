@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 AI Parlante con Riferimento Vocale
 Script principale che avvia l'applicazione.
@@ -12,8 +9,10 @@ import sys
 import argparse
 import logging
 from datetime import datetime
+import sounddevice as sd
 
 warnings.filterwarnings("ignore")
+
 
 # Configurazione del logging
 def setup_logging():
@@ -21,7 +20,7 @@ def setup_logging():
     log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
     os.makedirs(log_dir, exist_ok=True)
 
-    log_file = os.path.join(log_dir, f"ai_parlante_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
+    log_file = os.path.join(log_dir, f"ai_parlante_{datetime.now().strftime('%d%m%Y_%H%M%S')}.log")
 
     logging.basicConfig(
         level=logging.INFO,
@@ -43,6 +42,7 @@ def check_dependencies():
         import numpy
         import librosa
         import PyQt5
+        import sounddevice as sd
 
         # Verifica CUDA
         cuda_available = torch.cuda.is_available()
@@ -51,6 +51,13 @@ def check_dependencies():
         else:
             device_name = torch.cuda.get_device_name(0)
             logging.info(f"Dispositivo CUDA rilevato: {device_name}")
+
+        # Verifica sounddevice
+        devices = sd.query_devices()
+        logging.info("Dispositivi audio disponibili:")
+        for i, device in enumerate(devices):
+            logging.info(
+                f"{i}: {device['name']} (in: {device['max_input_channels']}, out: {device['max_output_channels']})")
 
         return True
     except ImportError as e:
@@ -64,9 +71,10 @@ def parse_arguments():
 
     parser.add_argument("--no-gui", action="store_true", help="Esegui in modalità console senza interfaccia grafica")
     parser.add_argument("--input-audio", type=str, help="File audio di riferimento")
-    parser.add_argument("--output-dir", type=str, help="Directory di output per i file generati")
-    parser.add_argument("--model-dir", type=str, help="Directory per i modelli vocali")
+    parser.add_argument("--output-dir", type=str, default="output", help="Directory di output per i file generati")
+    parser.add_argument("--model-dir", type=str, default="models", help="Directory per i modelli vocali")
     parser.add_argument("--debug", action="store_true", help="Attiva la modalità debug")
+    parser.add_argument("--audio-device", type=int, default=None, help="ID del dispositivo audio da utilizzare")
 
     return parser.parse_args()
 
@@ -76,6 +84,12 @@ def main():
     # Setup logging
     logger = setup_logging()
     logger.info("Avvio dell'applicazione AI Parlante")
+
+    # Stampa dispositivi audio disponibili
+    logger.info("Dispositivi audio rilevati:")
+    devices = sd.query_devices()
+    for i, device in enumerate(devices):
+        logger.info(f"{i}: {device['name']} (in: {device['max_input_channels']}, out: {device['max_output_channels']})")
 
     # Analisi argomenti
     args = parse_arguments()
@@ -110,13 +124,21 @@ def main():
             # Crea l'applicazione Qt
             qt_app = QApplication(sys.argv)
 
-            # Crea il controller
-            controller = Controller(
-                input_audio=args.input_audio,
-                output_dir=args.output_dir,
-                model_dir=args.model_dir,
-                debug=args.debug
-            )
+            # Crea il controller con solo i parametri supportati
+            controller_params = {
+                'input_audio': args.input_audio,
+                'output_dir': args.output_dir,
+                'model_dir': args.model_dir,
+                'debug': args.debug
+            }
+            controller = Controller(**controller_params)
+
+            # Se è specificato un dispositivo audio, configuralo
+            if args.audio_device is not None:
+                try:
+                    controller.set_audio_device(args.audio_device)
+                except Exception as e:
+                    logger.warning(f"Impossibile impostare il dispositivo audio {args.audio_device}: {e}")
 
             # Crea e mostra la finestra principale
             main_window = MainWindow(controller)
@@ -132,4 +154,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-

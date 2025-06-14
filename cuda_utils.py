@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Modulo per l'ottimizzazione CUDA.
 Si occupa di configurare e ottimizzare l'utilizzo della GPU NVIDIA.

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Modulo per l'estrazione delle caratteristiche audio.
 Si occupa di estrarre le caratteristiche vocali dai file audio per l'addestramento del modello.

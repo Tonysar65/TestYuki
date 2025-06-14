@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Modulo per la riproduzione audio.
 Si occupa di riprodurre l'audio generato.

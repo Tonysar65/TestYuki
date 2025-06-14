@@ -1,15 +1,14 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Script per creare un file model.pt valido per il repository TestYuki.
 """
 
+import warnings
 import torch
 import torch.nn as nn
 import os
 import json
 
+warnings.filterwarnings("ignore")
 
 class VoiceEncoder(nn.Module):
     """Encoder per le caratteristiche vocali."""

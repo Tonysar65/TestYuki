@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Modulo per la clonazione vocale.
 Si occupa di clonare una voce a partire da un file audio di riferimento.

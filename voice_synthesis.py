@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Modulo per la sintesi vocale.
 Si occupa di convertire il testo in parlato utilizzando il modello vocale addestrato.

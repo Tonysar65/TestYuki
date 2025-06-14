@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Modulo per il preprocessing audio.
 Si occupa di caricare, normalizzare e preparare i file audio per l'elaborazione.

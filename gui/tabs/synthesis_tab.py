@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Scheda per la sintesi vocale.
 Permette all'utente di selezionare un modello vocale addestrato e sintetizzare il parlato a partire dal testo.

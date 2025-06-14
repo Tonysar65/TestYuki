@@ -37,7 +37,7 @@
 - [ ] Creare la documentazione tecnica
 - [ ] Preparare esempi di utilizzo
 
-## Fase 7: Consegna del progetto completo all'utente
+## Fase 7: Consegna del progetto completo
 - [ ] Preparare il pacchetto finale
 - [ ] Verificare che tutti i file siano inclusi
 - [ ] Creare istruzioni di installazione dettagliate

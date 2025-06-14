@@ -12,8 +12,6 @@ Questo file contiene le correzioni per il controller.py originale.
 5. Migliorata la gestione degli errori
 
 ```python
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Controller principale per l'applicazione AI Parlante - VERSIONE CORRETTA.
@@ -418,6 +416,3 @@ class Controller:
                     self._update_state(ProcessState.ERROR)
                     self._update_status(f"Errore: {str(e)}")
                     return False
-            
-   
-(Content truncated due to size limit. Use line ranges to read in chunks)

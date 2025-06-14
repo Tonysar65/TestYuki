@@ -38,4 +38,7 @@ scikit-learn>=0.24.2
 nvidia-ml-py3>=7.352.0
 numpy==1.23.5
 scipy
-sounddevice
+sounddevice~=0.5.2
+
+flask~=3.1.1
+noisereduce

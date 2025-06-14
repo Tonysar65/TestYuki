@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Test per verificare che i file creati siano compatibili con il repository TestYuki.
 """

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Script per creare un file model.pt simulato senza PyTorch.
 """
