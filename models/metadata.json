@@ -45,7 +45,7 @@
     "model_file": "model.pt",
     "metadata_file": "metadata.json",
     "file_size_bytes": 43459409,
-    "checksum": "7099bf32254619ef885f833fc7805105",
+    "checksum": "b6415db4667b73dd6a1194b99cda9224",
     "format": "simulated_pytorch"
   }
 }

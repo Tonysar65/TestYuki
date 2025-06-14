@@ -2,12 +2,11 @@
 Test per verificare le correzioni dei problemi di salvataggio e caricamento del modello.
 """
 
-import os
-import tempfile
-import shutil
 import json
+import os
+import shutil
+import tempfile
 import unittest
-from unittest.mock import Mock, patch, MagicMock
 
 
 class TestModelSavingLoading(unittest.TestCase):

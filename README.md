@@ -6,13 +6,13 @@ Un'applicazione Python per la creazione di un'intelligenza artificiale parlante 
 
 - **Sistema Operativo**: Windows 10
 - **GPU**: NVIDIA GeForce GTX 1060 3GB o superiore
-- **Python**: 3.9
+- **Python**: 3.9 o superiore max 3.11
 - **CUDA Toolkit**: 11.3 o compatibile
 - **cuDNN**: Versione compatibile con CUDA Toolkit
 
 ## Installazione
 
-### 1. Installazione di Python 3.9++
+### 1. Installazione di Python 3.9 o superiore max 3.11
 
 Se non hai già Python 3.9 installato:
 
@@ -59,6 +59,7 @@ ai_parlante/
 ├── audio_input/         # Directory per i file audio di riferimento
 ├── audio_output/        # Directory per i file audio generati
 ├── data/                # Directory per i dati di addestramento
+├── docs/                # Directory documentazione YukiAI
 ├── gui/                 # Interfaccia utente grafica
 ├── models/              # Moduli per i modelli di sintesi e riconoscimento
 ├── utils/               # Utilità varie
@@ -141,3 +142,4 @@ Questo progetto utilizza diverse librerie open source e modelli pre-addestrati. 
 
 Alcune parti del codice sono state controllate o realizzate in minima parte con l'IA come ChatGPT e DeepSeek.
 Il codice risulta avere ancora delle imperfezioni, ci sono molti avvisi da controllare ed eliminare e qualche funzione che deve essere perfezionata.
+C'è ancora del codice duplicato da eliminare.

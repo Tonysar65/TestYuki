@@ -42,3 +42,5 @@ sounddevice~=0.5.2
 
 flask~=3.1.1
 noisereduce
+pynvml
+joblib~=1.5.1

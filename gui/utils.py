@@ -2,16 +2,13 @@
 Utilità per l'interfaccia utente grafica.
 """
 
-import os
 import logging
+
+from PyQt5.QtCore import Qt, pyqtSignal, QObject
+from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QGroupBox,
-    QPushButton, QLabel, QLineEdit, QFileDialog, QMessageBox,
-    QProgressBar, QComboBox, QSlider, QCheckBox, QSpinBox,
-    QTabWidget, QFormLayout, QDialog, QFrame
+    QWidget
 )
-from PyQt5.QtCore import Qt, QSize, QTimer, pyqtSignal, pyqtSlot, QObject
-from PyQt5.QtGui import QIcon, QPixmap, QFont, QPalette, QColor
 
 
 class WaveformWidget(QWidget):
@@ -26,7 +23,7 @@ class WaveformWidget(QWidget):
         """
         super().__init__(parent)
 
-        self.logger = logging.getLogger("ai_parlante.gui.waveform_widget")
+        self.logger = logging.getLogger("YukiAI.gui.waveform_widget")
 
         # Dati
         self.waveform = None
@@ -70,7 +67,6 @@ class WaveformWidget(QWidget):
         Args:
             event: Evento di disegno
         """
-        import numpy as np
         from PyQt5.QtGui import QPainter, QPen
 
         # Crea il painter
@@ -138,7 +134,7 @@ class SpectrogramWidget(QWidget):
         """
         super().__init__(parent)
 
-        self.logger = logging.getLogger("ai_parlante.gui.spectrogram_widget")
+        self.logger = logging.getLogger("YukiAI.gui.spectrogram_widget")
 
         # Dati
         self.spectrogram = None
@@ -230,7 +226,7 @@ class AudioRecorder(QObject):
         """
         super().__init__(parent)
 
-        self.logger = logging.getLogger("ai_parlante.gui.audio_recorder")
+        self.logger = logging.getLogger("YukiAI.gui.audio_recorder")
 
         # Stato
         self.is_recording = False

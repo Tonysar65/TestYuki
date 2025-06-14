@@ -3,19 +3,18 @@ Scheda per la clonazione vocale.
 Permette all'utente di caricare un file audio di riferimento e addestrare un modello vocale.
 """
 
-import os
 import logging
-from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QGroupBox,
-    QPushButton, QLabel, QLineEdit, QFileDialog, QMessageBox,
-    QProgressBar, QComboBox, QSlider, QCheckBox, QSpinBox
-)
-from PyQt5.QtCore import Qt, QSize, QTimer, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QIcon, QPixmap, QFont
+import os
 
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
 import numpy as np
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtWidgets import (
+    QWidget, QVBoxLayout, QGridLayout, QGroupBox,
+    QPushButton, QLabel, QLineEdit, QFileDialog, QMessageBox,
+    QProgressBar, QSlider, QSpinBox
+)
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
 
 
 class VoiceCloningTab(QWidget):
@@ -30,7 +29,7 @@ class VoiceCloningTab(QWidget):
         """
         super().__init__()
 
-        self.logger = logging.getLogger("ai_parlante.gui.voice_cloning_tab")
+        self.logger = logging.getLogger("YukiAI.gui.voice_cloning_tab")
         self.controller = controller
 
         # Crea l'interfaccia

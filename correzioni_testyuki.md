@@ -51,7 +51,7 @@ class Controller:
             model_dir: Directory per i modelli vocali
             debug: Modalità debug
         """
-        self.logger = logging.getLogger("ai_parlante.controller")
+        self.logger = logging.getLogger("YukiAI.controller")
         self.logger.info("Inizializzazione del controller")
         
         # Configurazione percorsi

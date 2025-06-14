@@ -3,17 +3,17 @@ Modulo per la riproduzione audio.
 Si occupa di riprodurre l'audio generato.
 """
 
-import os
 import logging
+import os
 import threading
 import time
+import wave
+from typing import Optional
+
 import numpy as np
 import pyaudio
-import wave
 import sounddevice as sd
 import soundfile as sf
-import logging
-from typing import Optional, Union
 
 
 class AudioPlayback:
@@ -26,7 +26,7 @@ class AudioPlayback:
         Args:
             debug: Modalità debug
         """
-        self.logger = logging.getLogger("ai_parlante.audio_playback")
+        self.logger = logging.getLogger("YukiAI.audio_playback")
         self.debug = debug
 
         # PyAudio
@@ -221,7 +221,7 @@ class AudioPlayback:
                 channels=wf.getnchannels(),
                 rate=wf.getframerate(),
                 output=True,
-                stream_callback=self._stream_callback
+                #stream_callback=self._stream_callback
             )
 
             # Imposta lo stato
@@ -320,7 +320,7 @@ class AudioPlayback:
             self.logger.error(f"Errore durante la riproduzione array: {e}")
             self.is_playing = False
 
-    def _stream_callback(self, in_data, frame_count, time_info, status):
+    def _stream_callback(self, in_data):
         """
         Callback per lo stream audio.
 
@@ -338,7 +338,7 @@ class AudioPlayback:
 
         return in_data, pyaudio.paContinue
 
-logger = logging.getLogger("ai_parlante.audio_playback")
+logger = logging.getLogger("YukiAI.audio_playback")
 
 def play_audio(file_path):
     try:

@@ -6,5 +6,5 @@ il riconoscimento vocale e l'interfaccia utente grafica.
 """
 
 __version__ = "1.0.0"
-__author__ = "tony AI"
+__author__ = "Tonysar"
 

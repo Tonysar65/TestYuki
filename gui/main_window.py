@@ -2,21 +2,21 @@
 Finestra principale dell'applicazione AI Parlante.
 """
 
-import os
-import sys
 import logging
+import os
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon, QPixmap, QFont
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QTabWidget,
-    QPushButton, QLabel, QStatusBar, QFileDialog, QMessageBox,
-    QApplication, QSplitter, QFrame, QProgressBar
+    QPushButton, QLabel, QStatusBar, QMessageBox,
+    QFrame, QProgressBar
 )
-from PyQt5.QtCore import Qt, QSize, QTimer, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QIcon, QPixmap, QFont
 
+from gui.tabs.settings_tab import SettingsTab
+from gui.tabs.synthesis_tab import SynthesisTab
 # Importa le schede
 from gui.tabs.voice_cloning_tab import VoiceCloningTab
-from gui.tabs.synthesis_tab import SynthesisTab
-from gui.tabs.settings_tab import SettingsTab
 
 
 class MainWindow(QMainWindow):
@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
         """
         super().__init__()
 
-        self.logger = logging.getLogger("ai_parlante.gui.main_window")
+        self.logger = logging.getLogger("YukiAI.gui.main_window")
         self.controller = controller
         self.current_state = "ready"  # Stati possibili: ready, processing, error
 

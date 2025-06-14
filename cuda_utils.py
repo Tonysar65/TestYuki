@@ -3,11 +3,10 @@ Modulo per l'ottimizzazione CUDA.
 Si occupa di configurare e ottimizzare l'utilizzo della GPU NVIDIA.
 """
 
-import os
 import logging
-import numpy as np
+from typing import Dict, Any
+
 import torch
-from typing import Dict, Any, List, Tuple, Optional, Union
 
 
 class CUDAOptimizer:
@@ -20,7 +19,7 @@ class CUDAOptimizer:
         Args:
             debug: Modalità debug
         """
-        self.logger = logging.getLogger("ai_parlante.cuda_optimizer")
+        self.logger = logging.getLogger("YukiAI.cuda_optimizer")
         self.debug = debug
 
         # Verifica se CUDA è disponibile

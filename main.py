@@ -42,7 +42,7 @@ def check_dependencies():
         import numpy
         import librosa
         import PyQt5
-        import sounddevice as sd
+        import sounddevice as _sd
 
         # Verifica CUDA
         cuda_available = torch.cuda.is_available()
@@ -53,7 +53,7 @@ def check_dependencies():
             logging.info(f"Dispositivo CUDA rilevato: {device_name}")
 
         # Verifica sounddevice
-        devices = sd.query_devices()
+        devices = _sd.query_devices()
         logging.info("Dispositivi audio disponibili:")
         for i, device in enumerate(devices):
             logging.info(

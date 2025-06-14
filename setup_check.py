@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Script di verifica della configurazione per AI Parlante
 Questo script verifica che tutte le dipendenze necessarie siano installate
@@ -8,11 +5,9 @@ e che la GPU NVIDIA sia riconosciuta correttamente.
 """
 
 import os
-import sys
 import platform
-import subprocess
-import importlib
-from importlib import util
+import sys
+
 import pkg_resources
 
 
@@ -206,7 +201,7 @@ def check_directories():
         "models",
         "gui",
         "utils",
-        "voice_models",
+        "voice_models/example_model",
         "data"
     ]
 

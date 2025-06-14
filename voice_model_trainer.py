@@ -185,7 +185,7 @@ class VoiceModel:
             model_dir: Directory per i modelli
             debug: Modalità debug
         """
-        self.logger = logging.getLogger("ai_parlante.voice_model")
+        self.logger = logging.getLogger("YukiAI.voice_model")
         self.model_dir = model_dir
         self.debug = debug
 

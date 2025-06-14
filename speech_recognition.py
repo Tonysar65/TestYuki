@@ -3,13 +3,13 @@ Modulo per il riconoscimento vocale.
 Si occupa di trascrivere il parlato in testo.
 """
 
-import os
 import logging
+import os
+import threading
+from typing import Callable
+
 import numpy as np
 import torch
-import threading
-import time
-from typing import Dict, Any, List, Tuple, Optional, Union, Callable
 
 
 class SpeechRecognizer:
@@ -24,7 +24,7 @@ class SpeechRecognizer:
             language: Lingua del riconoscimento
             debug: Modalità debug
         """
-        self.logger = logging.getLogger("ai_parlante.speech_recognizer")
+        self.logger = logging.getLogger("YukiAI.speech_recognizer")
         self.model_type = model_type
         self.language = language
         self.debug = debug

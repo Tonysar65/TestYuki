@@ -26,7 +26,7 @@ class Synthesizer:
             model_dir: Directory per i modelli
             debug: Modalità debug
         """
-        self.logger = logging.getLogger("ai_parlante.synthesizer")
+        self.logger = logging.getLogger("YukiAI.synthesizer")
         self.model_dir = model_dir
         self.debug = debug
 

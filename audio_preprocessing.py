@@ -3,12 +3,13 @@ Modulo per il preprocessing audio.
 Si occupa di caricare, normalizzare e preparare i file audio per l'elaborazione.
 """
 
-import os
 import logging
-import numpy as np
+import os
+from typing import Dict, Any, Optional, Union
+
 import librosa
+import numpy as np
 import soundfile as sf
-from typing import Dict, Any, Tuple, Optional, Union
 
 
 class AudioProcessor:
@@ -22,7 +23,7 @@ class AudioProcessor:
             sample_rate: Frequenza di campionamento target
             debug: Modalità debug
         """
-        self.logger = logging.getLogger("ai_parlante.audio_processor")
+        self.logger = logging.getLogger("YukiAI.audio_processor")
         self.sample_rate = sample_rate
         self.debug = debug
         self.logger.info(f"AudioProcessor inizializzato (sample_rate={sample_rate})")

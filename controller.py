@@ -3,15 +3,17 @@ Controller principale per l'applicazione AI Parlante.
 Coordina i vari moduli e gestisce il flusso di lavoro dell'applicazione.
 """
 import json
-import os
 import logging
+import os
 import pickle
 import threading
 import time
+from enum import Enum
+from typing import Optional
+
 import sounddevice as sd
 import soundfile as sf
-from enum import Enum
-from typing import Optional, Dict, Any, List, Tuple
+
 
 class ProcessState(Enum):
     """Stati possibili per i processi dell'applicazione."""
@@ -32,6 +34,7 @@ class Controller:
         self.output_dir = output_dir
         self.model_dir = model_dir
         self.debug = debug
+        self.audio_device = None
         self.processing_cancelled = False
         self.settings_file = "settings.json"
         self.settings = {}
@@ -47,7 +50,7 @@ class Controller:
             model_dir: Directory per i modelli vocali
             debug: Modalità debug
         """
-        self.logger = logging.getLogger("ai_parlante.controller")
+        self.logger = logging.getLogger("YukiAI.controller")
         self.logger.info("Inizializzazione del controller")
 
         # Configurazione percorsi
@@ -484,5 +487,15 @@ class Controller:
     def cancel_processing(self):
         """Metodo per interrompere un'elaborazione in corso."""
         self.processing_cancelled = True
-        logging.getLogger("ai_parlante.controller").info("Elaborazione annullata dall'utente")
+        logging.getLogger("YukiAI.controller").info("Elaborazione annullata dall'utente")
+
+    def set_audio_device(self, device_id):
+        """Imposta il dispositivo audio di output."""
+        try:
+            sd.default.device = device_id
+            self.audio_device = device_id
+            self.logger.info(f"Dispositivo audio impostato su ID {device_id}: {sd.query_devices(device_id)['name']}")
+        except Exception as e:
+            self.logger.error(f"Errore nell'impostazione del dispositivo audio: {e}")
+            raise
 

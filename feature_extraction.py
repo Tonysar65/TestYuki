@@ -3,13 +3,14 @@ Modulo per l'estrazione delle caratteristiche audio.
 Si occupa di estrarre le caratteristiche vocali dai file audio per l'addestramento del modello.
 """
 
-import os
 import logging
-import numpy as np
+import os
+from typing import Dict, Any
+
 import librosa
+import numpy as np
 import torch
 import torchaudio
-from typing import Dict, Any, List, Tuple, Optional, Union
 
 
 class FeatureExtractor:
@@ -26,7 +27,7 @@ class FeatureExtractor:
             n_mels: Numero di bande mel
             debug: Modalità debug
         """
-        self.logger = logging.getLogger("ai_parlante.feature_extractor")
+        self.logger = logging.getLogger("YukiAI.feature_extractor")
         self.n_fft = n_fft
         self.hop_length = hop_length
         self.n_mels = n_mels

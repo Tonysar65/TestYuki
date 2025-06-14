@@ -3,15 +3,15 @@ Modulo per la clonazione vocale.
 Si occupa di clonare una voce a partire da un file audio di riferimento.
 """
 
-import os
+import json
 import logging
+import os
+import time
+from typing import Dict, Any, Optional, Callable
+
 import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import time
-import json
-from typing import Dict, Any, List, Tuple, Optional, Union, Callable
 
 
 class VoiceCloner:
@@ -25,7 +25,7 @@ class VoiceCloner:
             model_dir: Directory per i modelli
             debug: Modalità debug
         """
-        self.logger = logging.getLogger("ai_parlante.voice_cloner")
+        self.logger = logging.getLogger("YukiAI.voice_cloner")
         self.model_dir = model_dir
         self.debug = debug
 

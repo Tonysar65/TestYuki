@@ -3,16 +3,15 @@ Scheda per la sintesi vocale.
 Permette all'utente di selezionare un modello vocale addestrato e sintetizzare il parlato a partire dal testo.
 """
 
-import os
 import logging
+import os
+
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QGroupBox,
-    QPushButton, QLabel, QLineEdit, QFileDialog, QMessageBox,
-    QProgressBar, QComboBox, QSlider, QCheckBox, QSpinBox,
-    QTextEdit, QToolButton
+    QPushButton, QLabel, QFileDialog, QMessageBox,
+    QProgressBar, QComboBox, QSlider, QTextEdit
 )
-from PyQt5.QtCore import Qt, QSize, QTimer, QObject, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QIcon, QPixmap, QFont
 
 
 class SynthesisTab(QWidget):
@@ -32,14 +31,14 @@ class SynthesisTab(QWidget):
         """
         super().__init__()
 
-        self.logger = logging.getLogger("ai_parlante.gui.synthesis_tab")
+        self.logger = logging.getLogger("YukiAI.gui.synthesis_tab")
         self.controller = controller
 
         # Crea l'interfaccia
         self._create_ui()
 
         # Connetti i segnali
-        self._connect_signals()
+        # self._connect_signals()
 
         # Carica i modelli disponibili
         self._load_models()
@@ -162,7 +161,7 @@ class SynthesisTab(QWidget):
         # Spaziatore
         main_layout.addStretch()
 
-    def _connect_signals(self):
+    '''def _connect_signals(self):
         """Connette i segnali."""
         # Pulsante Ricarica
         self.reload_button.clicked.connect(self._load_models)
@@ -196,7 +195,7 @@ class SynthesisTab(QWidget):
 
         # Connessione dei segnali personalizzati
         self.synthesis_progress.valueChanged.connect(self.synthesis_progress.setValue)
-        self.synthesis_completed.connect(self._on_synthesis_completed)
+        self.synthesis_completed.connect(self._on_synthesis_completed)'''
 
     def _load_models(self):
         """Carica i modelli disponibili."""

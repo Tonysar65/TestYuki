@@ -3,12 +3,10 @@ Applicazione console per AI Parlante.
 Permette di utilizzare l'applicazione da riga di comando senza interfaccia grafica.
 """
 
-import os
-import sys
-import logging
 import argparse
+import logging
+import os
 import time
-from typing import Dict, Any, List, Tuple, Optional, Union
 
 
 class ConsoleApp:
@@ -21,7 +19,7 @@ class ConsoleApp:
         Args:
             args: Argomenti della riga di comando
         """
-        self.logger = logging.getLogger("ai_parlante.console_app")
+        self.logger = logging.getLogger("YukiAI.console_app")
         self.args = args
 
         # Controller
