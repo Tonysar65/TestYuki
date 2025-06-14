@@ -12,6 +12,10 @@ Un'applicazione Python per la creazione di un'intelligenza artificiale parlante 
 
 ## Installazione
 
+```bash
+pip install -r requirements.txt
+```
+
 ### 1. Installazione di Python 3.9 o superiore max 3.11
 
 Se non hai già Python 3.9 installato:
@@ -32,8 +36,8 @@ Per sfruttare l'accelerazione GPU NVIDIA:
 
 ```bash
 # Crea una directory per il progetto (se non stai già usando quella scaricata)
-mkdir ai_parlante
-cd ai_parlante
+mkdir TestYukiAi
+cd TestYukiAi
 
 # Crea un ambiente virtuale
 python -m venv venv
@@ -54,29 +58,36 @@ pip install nemo_toolkit[all]
 ## Struttura del Progetto
 
 ```
-ai_parlante/
-│
-├── audio_input/         # Directory per i file audio di riferimento
-├── audio_output/        # Directory per i file audio generati
-├── data/                # Directory per i dati di addestramento
-├── docs/                # Directory documentazione YukiAI
-├── gui/                 # Interfaccia utente grafica
-├── models/              # Moduli per i modelli di sintesi e riconoscimento
-├── utils/               # Utilità varie
-├── voice_models/        # Modelli vocali addestrati
-│
-├── main.py              # Script principale
-├── controller.py        # Controller principale
-├── audio_preprocessing.py  # Preprocessing audio
-├── feature_extraction.py   # Estrazione caratteristiche
-├── voice_model_trainer.py  # Addestramento modello vocale
-├── voice_synthesis.py      # Sintesi vocale
-├── audio_playback.py       # Riproduzione audio
-├── requirements.txt     # Dipendenze Python
-└── README.md            # Questo file
+TestYuki/
+├── audio_input/                  # Moduli per l'acquisizione audio
+├── docs/                         # Documentazione del progetto
+├── gui/                          # Interfaccia grafica utente
+├── models/                       # Modelli di intelligenza artificiale
+├── templates/                    # Template per la generazione di modelli
+├── voice_models/                 # Modelli vocali
+│   └── example_model/            # Esempio di modello vocale
+├── LICENSE                       # Licenza del progetto
+├── LICENSE.md                    # Dettagli sulla licenza
+├── README.md                     # Introduzione e guida del progetto
+├── __init__.py                   # Inizializzazione del pacchetto
+├── app.py                        # Applicazione principale
+├── audio_playback.py             # Riproduzione audio
+├── audio_preprocessing.py        # Pre-elaborazione audio
+├── console_app.py                # Applicazione da riga di comando
+├── controller.py                 # Logica di controllo principale
+├── correzioni_testyuki.md        # Note sulle correzioni del progetto
+├── create_model_pt.py            # Creazione del modello in PyTorch
+├── create_model_pt_simulated.py  # Creazione del modello simulato in PyTorch
+├── cuda_utils.py                 # Utilità per l'uso di CUDA
+└── feature_extraction.py         # Estrazione delle caratteristiche audio
 ```
 
-## Utilizzo
+## Funzionalità
+
+- Registrazione audio
+- Riproduzione audio
+- Estrazione delle caratteristiche audio
+- Creazione e simulazione di modelli neurali
 
 ### Avvio dell'Applicazione
 
