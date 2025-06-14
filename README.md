@@ -127,9 +127,17 @@ La GTX 1060 3GB ha una memoria limitata. Se riscontri errori di memoria:
 
 ## Licenza
 
-Questo progetto è distribuito con licenza MIT. Vedi il file LICENSE per maggiori dettagli.
+Questo progetto è rilasciato con licenza MIT per uso esclusivamente non commerciale. 
+È consentito l'uso personale, educativo e di ricerca, ma è vietato qualsiasi utilizzo commerciale 
+senza autorizzazione esplicita.
+
+Vedi il file LICENSE per i dettagli completi.
 
 ## Riconoscimenti
 
 Questo progetto utilizza diverse librerie open source e modelli pre-addestrati. Tutti i riconoscimenti sono elencati nel file CREDITS.md.
 
+## Codice
+
+Alcune parti del codice sono state controllate o realizzate in minima parte con l'IA come ChatGPT e DeepSeek.
+Il codice risulta avere ancora delle imperfezioni, ci sono molti avvisi da controllare ed eliminare e qualche funzione che deve essere perfezionata.

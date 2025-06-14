@@ -61,7 +61,7 @@ Per sfruttare l'accelerazione GPU NVIDIA:
 
 1. Clona il repository:
    ```
-   git clone https://github.com/tony-ai/ai-parlante.git
+   git clone https://github.com/Tonysar65/TestYuki.git
    ```
 2. Entra nella directory del progetto:
    ```
@@ -129,7 +129,7 @@ La scheda Clonazione Vocale permette di creare un modello vocale a partire da un
 #### Caricamento del File Audio di Riferimento
 
 1. Clicca sul pulsante "Sfoglia..." per selezionare un file audio
-2. Seleziona un file audio in formato WAV, MP3, FLAC o OGG
+2. Seleziona un file audio in formato WAV, MP3, FLAC oppure OGG
 3. Il file audio verrà caricato e le informazioni (durata, frequenza di campionamento) verranno visualizzate
 4. Puoi riprodurre il file audio cliccando sul pulsante "Riproduci"
 

@@ -13,6 +13,10 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QSize, QTimer, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIcon, QPixmap, QFont
 
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+import numpy as np
+
 
 class VoiceCloningTab(QWidget):
     """Scheda per la clonazione vocale."""
@@ -235,8 +239,9 @@ class VoiceCloningTab(QWidget):
 
     def _on_train_clicked(self):
         """Gestisce il click sul pulsante Addestra."""
-        # Ottieni il nome del modello
-        model_name = self.model_name_edit.text()
+        model_name = self.model_name_edit.text().strip()
+        epochs = self.epochs_spin.value()
+        quality = self.quality_slider.value()
 
         if not model_name:
             QMessageBox.warning(
@@ -246,14 +251,28 @@ class VoiceCloningTab(QWidget):
             )
             return
 
-        # Aggiorna lo stato
         self.training_status.setText("Addestramento in corso...")
-
-        # Disabilita i pulsanti
         self.train_button.setEnabled(False)
 
-        # Simula l'addestramento (in un'implementazione reale, si utilizzerebbe il controller)
-        self._simulate_training()
+        try:
+            # Chiamata reale al controller
+            self.controller.train_model(model_name, epochs, quality)
+
+            self.training_status.setText("Addestramento completato")
+            QMessageBox.information(
+                self,
+                "Modello Addestrato",
+                f"Il modello '{model_name}' è stato salvato in 'models/'."
+            )
+        except Exception as e:
+            self.training_status.setText("Errore durante l'addestramento")
+            QMessageBox.critical(
+                self,
+                "Errore",
+                f"Si è verificato un errore:\n{str(e)}"
+            )
+        finally:
+            self.train_button.setEnabled(True)
 
     def _simulate_analysis(self):
         """Simula l'analisi audio."""
@@ -280,12 +299,24 @@ class VoiceCloningTab(QWidget):
             self.train_button.setEnabled(True)
 
     def _simulate_training(self):
-        """Simula l'addestramento del modello."""
-        # Crea un timer per simulare il progresso
-        self.training_timer = QTimer(self)
-        self.training_timer.timeout.connect(self._update_training_progress)
-        self.training_progress.setValue(0)
-        self.training_timer.start(100)
+        """Esegue l'addestramento del modello."""
+        # Carica i dati di addestramento (esempio con dati casuali)
+        X = np.random.rand(100, 10)  # 100 campioni, 10 caratteristiche
+        y = np.random.randint(0, 2, 100)  # 100 etichette binarie
+
+        # Suddividi i dati in set di addestramento e di test
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        # Crea e addestra il modello
+        model = KNeighborsClassifier(n_neighbors=3)
+        model.fit(X_train, y_train)
+
+        # Salva il modello addestrato
+        self._save_model(model)
+
+        # Calcola e stampa l'accuratezza sul set di test
+        accuracy = model.score(X_test, y_test)
+        print(f"Accuratezza del modello: {accuracy * 100:.2f}%")
 
     def _update_training_progress(self):
         """Aggiorna il progresso dell'addestramento."""

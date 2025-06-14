@@ -161,7 +161,7 @@ Responsabilità:
 ### Clonazione Vocale
 
 1. L'utente carica un file audio di riferimento
-2. Il file viene preprocessato ed analizzato
+2. Il file viene preprocessato e analizzato
 3. Le caratteristiche vocali vengono estratte
 4. Il modello di sintesi vocale viene addestrato/adattato
 5. Il modello viene salvato per uso futuro
@@ -182,6 +182,9 @@ AI Parlante utilizza diversi modelli di sintesi vocale, implementati utilizzando
 #### VoiceEncoder
 
 ```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 class VoiceEncoder(nn.Module):
     """
     Encoder per la voce del parlante.
@@ -241,6 +244,8 @@ class VoiceEncoder(nn.Module):
 #### TextEncoder
 
 ```python
+import torch
+import torch.nn as nn
 class TextEncoder(nn.Module):
     """
     Encoder per il testo.
@@ -298,6 +303,8 @@ class TextEncoder(nn.Module):
 #### Decoder
 
 ```python
+import torch
+import torch.nn as nn
 class Decoder(nn.Module):
     """
     Decoder per la sintesi vocale.
@@ -348,6 +355,8 @@ class Decoder(nn.Module):
 #### VoiceCloningModel
 
 ```python
+import torch
+import torch.nn as nn
 class VoiceCloningModel(nn.Module):
     """Modello per la clonazione vocale."""
     
@@ -401,6 +410,7 @@ class VoiceCloningModel(nn.Module):
 AI Parlante utilizza CUDA per accelerare l'addestramento e l'inferenza dei modelli di sintesi vocale. Il modulo `cuda_utils.py` fornisce funzioni per ottimizzare l'utilizzo della GPU NVIDIA:
 
 ```python
+import torch
 def optimize_memory_usage(self):
     """Ottimizza l'utilizzo della memoria."""
     if not self.cuda_available:
@@ -422,12 +432,15 @@ def optimize_memory_usage(self):
 ```
 
 ```python
+import torch
 def enable_mixed_precision(self, enabled: bool = True):
     """
     Abilita o disabilita la precisione mista.
     
     Args:
-        enabled: True per abilitare, False per disabilitare
+        enabled: True per abilitare, False per disabilitare 
+        :param self: 
+        :param enabled:
     """
     self.mixed_precision = enabled
     
@@ -481,5 +494,3 @@ def get_optimal_batch_size(self, model_size_mb: float) -> int:
         # Utilizza circa il 70% della memoria disponibile
         memory_per_sample = model_size_mb * 2  # Stima: modello + gradienti + buffer
         max_batch_size = int((free_memory_mb * 0.7) / memory_per_sample)
-      
-(Content truncated due to size limit. Use line ranges to read in chunks)

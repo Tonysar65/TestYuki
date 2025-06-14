@@ -5,8 +5,11 @@ Coordina i vari moduli e gestisce il flusso di lavoro dell'applicazione.
 import json
 import os
 import logging
+import pickle
 import threading
 import time
+import sounddevice as sd
+import soundfile as sf
 from enum import Enum
 from typing import Optional, Dict, Any, List, Tuple
 
@@ -24,17 +27,16 @@ class ProcessState(Enum):
 class Controller:
     """Controller principale dell'applicazione."""
 
-    '''def __init__(self, input_audio: Optional[str] = None,
-                 output_dir: Optional[str] = None,
-                 model_dir: Optional[str] = None,
-                 debug: bool = False):'''
-
     def __init__(self, input_audio=None, output_dir="output", model_dir="models", debug=False):
         self.input_audio = input_audio
         self.output_dir = output_dir
         self.model_dir = model_dir
         self.debug = debug
         self.processing_cancelled = False
+        self.settings_file = "settings.json"
+        self.settings = {}
+        self.models_dir = "models"
+        os.makedirs(self.models_dir, exist_ok=True)
 
         """
         Inizializza il controller.
@@ -199,6 +201,47 @@ class Controller:
             self._update_status(f"Errore: {str(e)}")
             return False
 
+    def get_settings(self):
+        """Restituisce le impostazioni correnti."""
+        return self.settings
+
+    def save_settings(self, new_settings=None):
+        """Salva le impostazioni in un file JSON."""
+        if new_settings:
+            self.settings = new_settings
+        try:
+            with open(self.settings_file, "w", encoding="utf-8") as f:
+                json.dump(self.settings, f, indent=4)
+        except Exception as e:
+            raise RuntimeError(f"Errore nel salvataggio delle impostazioni: {e}")
+
+    def load_settings(self):
+        """Carica le impostazioni da un file JSON."""
+        if os.path.exists(self.settings_file):
+            try:
+                with open(self.settings_file, "r", encoding="utf-8") as f:
+                    self.settings = json.load(f)
+            except Exception as e:
+                raise RuntimeError(f"Errore nel caricamento delle impostazioni: {e}")
+
+    def train_model(self, model_name, epochs, quality):
+        """
+        Esegue l'addestramento del modello (esempio semplificato).
+        Salva un file .pkl come segnaposto per il modello addestrato.
+        """
+        model_data = {
+            "name": model_name,
+            "epochs": epochs,
+            "quality": quality,
+        }
+
+        model_path = os.path.join(self.models_dir, f"{model_name}.pkl")
+        try:
+            with open(model_path, "wb") as f:
+                pickle.dump(model_data, f)
+        except Exception as e:
+            raise RuntimeError(f"Errore nel salvataggio del modello: {e}")
+
     def train_voice_model(self, model_name: str) -> bool:
         """
         Addestra un modello vocale basato sul file audio di riferimento.
@@ -334,7 +377,7 @@ class Controller:
             self._update_status(f"Errore: {str(e)}")
             return False
 
-    def play_audio(self, file_path: str) -> bool:
+    def play_audio(self, file_path: str) -> Optional[bool]:
         """
         Riproduce un file audio.
 
@@ -349,13 +392,13 @@ class Controller:
             return False
 
         try:
-            self._update_status(f"Riproduzione: {os.path.basename(file_path)}")
-            self.playback.play(file_path)
-            return True
+            data, samplerate = sf.read(file_path)
+            sd.play(data, samplerate)
+            sd.wait()
+            return None
         except Exception as e:
-            self.logger.error(f"Errore durante la riproduzione: {e}")
-            self._update_status(f"Errore: {str(e)}")
-            return False
+            print(f"Errore durante la riproduzione: {e}")
+            return None
 
     def stop_playback(self) -> bool:
         """
@@ -372,23 +415,6 @@ class Controller:
             self.logger.error(f"Errore durante l'interruzione della riproduzione: {e}")
             self._update_status(f"Errore: {str(e)}")
             return False
-
-    '''def get_available_models(self) -> List[str]:
-        """
-        Ottiene la lista dei modelli vocali disponibili.
-
-        Returns:
-            List[str]: Lista dei nomi dei modelli disponibili
-        """
-        try:
-            models = []
-            for item in os.listdir(self.model_dir):
-                if os.path.isdir(os.path.join(self.model_dir, item)):
-                    models.append(item)
-            return models
-        except Exception as e:
-            self.logger.error(f"Errore durante il recupero dei modelli: {e}")
-            return []'''
 
     def get_available_models(self):
         models = []

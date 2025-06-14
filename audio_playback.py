@@ -10,6 +10,9 @@ import time
 import numpy as np
 import pyaudio
 import wave
+import sounddevice as sd
+import soundfile as sf
+import logging
 from typing import Optional, Union
 
 
@@ -335,3 +338,13 @@ class AudioPlayback:
 
         return in_data, pyaudio.paContinue
 
+logger = logging.getLogger("ai_parlante.audio_playback")
+
+def play_audio(file_path):
+    try:
+        data, samplerate = sf.read(file_path)
+        sd.play(data, samplerate)
+        sd.wait()
+        logger.info(f"Riproduzione completata: {file_path}")
+    except Exception as e:
+        logger.error(f"Errore durante la riproduzione: {e}")

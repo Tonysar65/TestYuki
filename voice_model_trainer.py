@@ -7,6 +7,8 @@ import os
 import logging
 import time
 import json
+
+import joblib
 import numpy as np
 import torch
 import torch.nn as nn
@@ -393,13 +395,15 @@ class VoiceModel:
                 progress = (epoch + 1) / num_epochs
                 progress_callback(progress)
 
-    def _save_model(self, model_file: str):
+    def _save_model(self, model: str):
         """
         Salva il modello.
 
         Args:
             model_file: Percorso del file del modello
         """
+
+        model_filename = model
         # Crea il dizionario del modello
         model_dict = {
             "voice_encoder": self.voice_encoder.state_dict(),
@@ -411,10 +415,15 @@ class VoiceModel:
             "vocab_size": self.vocab_size
         }
 
-        # Salva il modello
-        torch.save(model_dict, model_file)
+        try:
+            joblib.dump(model, model_filename)
+            # Salva il modello
+            torch.save(model_dict, model_filename)
+            print(f"Modello salvato come {model_filename}")
+        except Exception as e:
+            print(f"Errore durante il salvataggio del modello: {e}")
 
-    def load_model(self, model_file: str) -> bool:
+    def load_model(self, model_file: str, X_new) -> bool:
         """
         Carica un modello.
 
@@ -424,6 +433,13 @@ class VoiceModel:
         Returns:
             bool: True se il caricamento è riuscito, False altrimenti
         """
+        """Esegui previsioni con il modello caricato."""
+        if model_file:
+            predictions = model_file.predict(X_new)
+            print(f"Previsioni: {predictions}")
+        else:
+            print("Nessun modello caricato.")
+
         try:
             # Carica il modello
             model_dict = torch.load(model_file, map_location=self.device)

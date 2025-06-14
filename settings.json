@@ -1,0 +1,17 @@
+{
+    "output_dir": "F:/YukiAI/output",
+    "model_dir": "F:/YukiAI/models",
+    "output_format": "WAV",
+    "sample_rate": 22050,
+    "input_device": 4,
+    "output_device": 6,
+    "volume": 80,
+    "model_size": "Medio",
+    "epochs": 100,
+    "use_cuda": true,
+    "mixed_precision": true,
+    "debug_mode": false,
+    "batch_size": 8,
+    "fft_size": 1024,
+    "hop_length": 256
+}

@@ -77,6 +77,7 @@ python main.py
 ```
 # Clonazione vocale
 python console_app.py clone C:\audio\riferimento.wav voce_mario
+python console_app.py clone C:\audio\riferimento.wav voce_maria
 
 # Sintesi vocale
 python console_app.py synthesize voce_mario "Ciao, sono una voce sintetica creata con AI Parlante."
