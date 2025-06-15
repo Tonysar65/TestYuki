@@ -55,33 +55,6 @@ pip install -r requirements.txt
 pip install nemo_toolkit[all]
 ```
 
-## Struttura del Progetto
-
-```
-TestYuki/
-├── audio_input/                  # Moduli per l'acquisizione audio
-├── docs/                         # Documentazione del progetto
-├── gui/                          # Interfaccia grafica utente
-├── models/                       # Modelli di intelligenza artificiale
-├── templates/                    # Template per la generazione di modelli
-├── voice_models/                 # Modelli vocali
-│   └── example_model/            # Esempio di modello vocale
-├── LICENSE                       # Licenza del progetto
-├── LICENSE.md                    # Dettagli sulla licenza
-├── README.md                     # Introduzione e guida del progetto
-├── __init__.py                   # Inizializzazione del pacchetto
-├── app.py                        # Applicazione principale
-├── audio_playback.py             # Riproduzione audio
-├── audio_preprocessing.py        # Pre-elaborazione audio
-├── console_app.py                # Applicazione da riga di comando
-├── controller.py                 # Logica di controllo principale
-├── correzioni_testyuki.md        # Note sulle correzioni del progetto
-├── create_model_pt.py            # Creazione del modello in PyTorch
-├── create_model_pt_simulated.py  # Creazione del modello simulato in PyTorch
-├── cuda_utils.py                 # Utilità per l'uso di CUDA
-└── feature_extraction.py         # Estrazione delle caratteristiche audio
-```
-
 ## Funzionalità
 
 - Registrazione audio
