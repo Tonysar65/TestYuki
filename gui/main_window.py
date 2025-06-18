@@ -15,7 +15,6 @@ from PyQt5.QtWidgets import (
 
 from gui.tabs.settings_tab import SettingsTab
 from gui.tabs.synthesis_tab import SynthesisTab
-# Importa le schede
 from gui.tabs.voice_cloning_tab import VoiceCloningTab
 
 
@@ -23,40 +22,25 @@ class MainWindow(QMainWindow):
     """Finestra principale dell'applicazione."""
 
     def __init__(self, controller):
-        """
-        Inizializza la finestra principale.
-
-        Args:
-            controller: Controller dell'applicazione
-        """
         super().__init__()
-
         self.logger = logging.getLogger("YukiAI.gui.main_window")
         self.controller = controller
-        self.current_state = "ready"  # Stati possibili: ready, processing, error
+        self.current_state = "ready"
 
-        # Imposta il titolo e le dimensioni
         self.setWindowTitle("AI Parlante - Sintesi Vocale con Riferimento Audio")
         self.resize(1000, 700)
 
-        # Crea l'interfaccia
         self._create_ui()
-
-        # Connetti i segnali
         self._connect_signals()
-
-        # Carica le impostazioni iniziali
         self._load_initial_settings()
 
         self.logger.info("Finestra principale inizializzata")
 
     def _create_ui(self):
         """Crea l'interfaccia utente."""
-        # Widget centrale
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
 
-        # Layout principale
         main_layout = QVBoxLayout(central_widget)
         main_layout.setContentsMargins(10, 10, 10, 10)
 
@@ -80,7 +64,6 @@ class MainWindow(QMainWindow):
         title_label.setStyleSheet("color: #2c3e50;")
         header_layout.addWidget(title_label)
 
-        # Spaziatore
         header_layout.addStretch()
 
         # Pulsante informazioni
@@ -91,7 +74,6 @@ class MainWindow(QMainWindow):
         self.info_button.setStyleSheet("QPushButton { border-radius: 16px; }")
         header_layout.addWidget(self.info_button)
 
-        # Aggiungi l'intestazione al layout principale
         main_layout.addLayout(header_layout)
 
         # Separatore
@@ -114,19 +96,16 @@ class MainWindow(QMainWindow):
             }
         """)
 
-        # Scheda Clonazione Vocale
+        # Schede
         self.voice_cloning_tab = VoiceCloningTab(self.controller)
         self.tab_widget.addTab(self.voice_cloning_tab, "Clonazione Vocale")
 
-        # Scheda Sintesi Vocale
         self.synthesis_tab = SynthesisTab(self.controller)
         self.tab_widget.addTab(self.synthesis_tab, "Sintesi Vocale")
 
-        # Scheda Impostazioni
         self.settings_tab = SettingsTab(self.controller)
         self.tab_widget.addTab(self.settings_tab, "Impostazioni")
 
-        # Aggiungi il tab widget al layout principale
         main_layout.addWidget(self.tab_widget)
 
         # Barra di stato
@@ -161,17 +140,15 @@ class MainWindow(QMainWindow):
 
     def _connect_signals(self):
         """Connette i segnali."""
-        # Connetti i segnali del controller
         self.controller.on_state_changed = self._on_state_changed
         self.controller.on_progress_changed = self._on_progress_changed
         self.controller.on_status_changed = self._on_status_changed
 
-        # Connetti i pulsanti
         self.info_button.clicked.connect(self._show_about_dialog)
         self.stop_button.clicked.connect(self.controller.cancel_processing)
 
-        # Connetti il segnale delle impostazioni modificate
-        self.settings_tab.settings_changed.connect(self._on_settings_changed)
+        if hasattr(self.settings_tab, 'settings_changed'):
+            self.settings_tab.settings_changed.connect(self._on_settings_changed)
 
     def _load_initial_settings(self):
         """Carica le impostazioni iniziali."""
@@ -181,31 +158,23 @@ class MainWindow(QMainWindow):
 
     def _apply_ui_settings(self, settings):
         """Applica le impostazioni all'interfaccia."""
-        # Qui puoi applicare le impostazioni che influenzano l'interfaccia
         if 'theme' in settings:
             self._apply_theme(settings['theme'])
 
     def _apply_theme(self, theme_name):
         """Applica un tema all'interfaccia."""
-        # Implementa la logica per cambiare tema
         pass
 
     def _on_state_changed(self, state):
-        """
-        Gestisce il cambio di stato del controller.
-
-        Args:
-            state: Nuovo stato (ready, processing, error)
-        """
-        self.current_state = state
+        """Gestisce il cambio di stato del controller."""
+        self.current_state = state.name.lower()
         self.logger.debug(f"Cambio stato: {state}")
 
-        # Aggiorna l'interfaccia in base allo stato
-        if state == "processing":
+        if self.current_state == "processing":
             self._set_processing_ui()
-        elif state == "error":
+        elif self.current_state == "error":
             self._set_error_ui()
-        else:  # ready
+        else:
             self._set_ready_ui()
 
     def _set_ready_ui(self):
@@ -214,7 +183,6 @@ class MainWindow(QMainWindow):
         self.progress_bar.setValue(0)
         self.progress_label.setText("0%")
 
-        # Abilita tutte le schede
         for i in range(self.tab_widget.count()):
             self.tab_widget.setTabEnabled(i, True)
 
@@ -222,7 +190,6 @@ class MainWindow(QMainWindow):
         """Configura l'interfaccia per lo stato 'elaborazione'."""
         self.stop_button.setEnabled(True)
 
-        # Disabilita le schede non correnti durante l'elaborazione
         current_index = self.tab_widget.currentIndex()
         for i in range(self.tab_widget.count()):
             self.tab_widget.setTabEnabled(i, i == current_index)
@@ -233,37 +200,21 @@ class MainWindow(QMainWindow):
         self.progress_bar.setValue(0)
         self.progress_label.setText("ERR")
 
-        # Ripristina l'abilitazione delle schede
         for i in range(self.tab_widget.count()):
             self.tab_widget.setTabEnabled(i, True)
 
     def _on_progress_changed(self, progress):
-        """
-        Gestisce il cambio di progresso del controller.
-
-        Args:
-            progress: Nuovo valore del progresso (0.0-1.0)
-        """
+        """Gestisce il cambio di progresso del controller."""
         progress_percent = int(progress * 100)
         self.progress_bar.setValue(progress_percent)
         self.progress_label.setText(f"{progress_percent}%")
 
     def _on_status_changed(self, message):
-        """
-        Gestisce il cambio di messaggio di stato del controller.
-
-        Args:
-            message: Nuovo messaggio di stato
-        """
+        """Gestisce il cambio di messaggio di stato del controller."""
         self.status_label.setText(message)
 
     def _on_settings_changed(self, settings):
-        """
-        Gestisce il cambiamento delle impostazioni.
-
-        Args:
-            settings: Dizionario con le nuove impostazioni
-        """
+        """Gestisce il cambiamento delle impostazioni."""
         self.logger.debug("Impostazioni modificate")
         self._apply_ui_settings(settings)
 
@@ -282,7 +233,6 @@ class MainWindow(QMainWindow):
         msg_box.setTextFormat(Qt.RichText)
         msg_box.setText(about_text)
 
-        # Aggiungi il logo se disponibile
         logo_pixmap = QPixmap(os.path.join("assets", "logo.png"))
         if not logo_pixmap.isNull():
             msg_box.setIconPixmap(logo_pixmap.scaled(64, 64, Qt.KeepAspectRatio))
@@ -290,12 +240,7 @@ class MainWindow(QMainWindow):
         msg_box.exec_()
 
     def closeEvent(self, event):
-        """
-        Gestisce l'evento di chiusura della finestra.
-
-        Args:
-            event: Evento di chiusura
-        """
+        """Gestisce l'evento di chiusura della finestra."""
         if self.current_state == "processing":
             reply = QMessageBox.question(
                 self,
@@ -309,15 +254,12 @@ class MainWindow(QMainWindow):
                 event.ignore()
                 return
 
-        # Esegui la pulizia delle risorse
         self.controller.cleanup()
 
-        # Salva le impostazioni prima di chiudere
         if hasattr(self.controller, 'save_settings'):
             try:
                 self.controller.save_settings()
             except Exception as e:
                 self.logger.error(f"Errore durante il salvataggio delle impostazioni: {e}")
 
-        # Accetta l'evento di chiusura
         event.accept()

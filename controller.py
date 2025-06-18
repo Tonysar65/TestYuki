@@ -1,7 +1,8 @@
-""""
+"""
 Controller principale per l'applicazione AI Parlante.
 Coordina i vari moduli e gestisce il flusso di lavoro dell'applicazione.
 """
+
 import json
 import logging
 import os
@@ -29,18 +30,7 @@ class ProcessState(Enum):
 class Controller:
     """Controller principale dell'applicazione."""
 
-    def __init__(self, input_audio=None, output_dir="output", model_dir="models", debug=False):
-        self.input_audio = input_audio
-        self.output_dir = output_dir
-        self.model_dir = model_dir
-        self.debug = debug
-        self.audio_device = None
-        self.processing_cancelled = False
-        self.settings_file = "settings.json"
-        self.settings = {}
-        self.models_dir = "models"
-        os.makedirs(self.models_dir, exist_ok=True)
-
+    def __init__(self, input_audio=None, output_dir="output", model_dir="models", audio_device=None, debug=False):
         """
         Inizializza il controller.
 
@@ -48,14 +38,21 @@ class Controller:
             input_audio: Percorso del file audio di riferimento
             output_dir: Directory per i file di output
             model_dir: Directory per i modelli vocali
+            audio_device: ID dispositivo audio
             debug: Modalità debug
         """
         self.logger = logging.getLogger("YukiAI.controller")
-        self.logger.info("Inizializzazione del controller")
+        self.input_audio = input_audio
+        self.output_dir = output_dir
+        self.model_dir = model_dir
+        self.audio_device = audio_device
+        self.debug = debug
+        self.processing_cancelled = False
+        self.settings_file = "settings.json"
+        self.settings = {}
 
         # Configurazione percorsi
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.input_audio = input_audio
         self.output_dir = output_dir or os.path.join(self.base_dir, "audio_output")
         self.model_dir = model_dir or os.path.join(self.base_dir, "voice_models")
         self.data_dir = os.path.join(self.base_dir, "data")
@@ -69,7 +66,6 @@ class Controller:
         self.state = ProcessState.IDLE
         self.progress = 0.0
         self.status_message = "Pronto"
-        self.debug = debug
 
         # Callback per aggiornamenti UI
         self.on_state_changed = None
@@ -89,9 +85,6 @@ class Controller:
 
         # Inizializza i moduli
         self._initialize_modules()
-
-        #
-        self.processing_cancelled = False  # reset per la prossima esecuzione
 
     def _initialize_modules(self):
         """Inizializza i vari moduli dell'applicazione."""
@@ -117,12 +110,7 @@ class Controller:
             self._update_status(f"Errore: {str(e)}")
 
     def _update_state(self, state: ProcessState):
-        """
-        Aggiorna lo stato del processo.
-
-        Args:
-            state: Nuovo stato
-        """
+        """Aggiorna lo stato del processo."""
         self.state = state
         self.logger.debug(f"Stato aggiornato: {state.name}")
 
@@ -130,24 +118,14 @@ class Controller:
             self.on_state_changed(state)
 
     def _update_progress(self, progress: float):
-        """
-        Aggiorna il progresso del processo.
-
-        Args:
-            progress: Valore del progresso (0.0-1.0)
-        """
+        """Aggiorna il progresso del processo."""
         self.progress = progress
 
         if self.on_progress_changed:
             self.on_progress_changed(progress)
 
     def _update_status(self, message: str):
-        """
-        Aggiorna il messaggio di stato.
-
-        Args:
-            message: Nuovo messaggio di stato
-        """
+        """Aggiorna il messaggio di stato."""
         self.status_message = message
         self.logger.info(message)
 
@@ -155,15 +133,7 @@ class Controller:
             self.on_status_changed(message)
 
     def load_reference_audio(self, file_path: str) -> bool:
-        """
-        Carica un file audio di riferimento.
-
-        Args:
-            file_path: Percorso del file audio
-
-        Returns:
-            bool: True se il caricamento è riuscito, False altrimenti
-        """
+        """Carica un file audio di riferimento."""
         if not os.path.exists(file_path):
             self._update_status(f"Errore: File {file_path} non trovato")
             return False
@@ -173,20 +143,15 @@ class Controller:
         self._update_progress(0.0)
 
         try:
-            # Esegui in un thread separato per non bloccare l'UI
             def worker():
                 try:
-                    # Carica e preprocessa l'audio
                     audio_data = self.audio_processor.load_audio(file_path)
                     self._update_progress(0.5)
 
-                    # Estrai caratteristiche
                     features = self.feature_extractor.extract_features(audio_data)
                     self._update_progress(1.0)
 
-                    # Salva il riferimento
                     self.input_audio = file_path
-
                     self._update_state(ProcessState.COMPLETED)
                     self._update_status(f"File audio caricato: {os.path.basename(file_path)}")
                     return True
@@ -228,10 +193,7 @@ class Controller:
                 raise RuntimeError(f"Errore nel caricamento delle impostazioni: {e}")
 
     def train_model(self, model_name, epochs, quality):
-        """
-        Esegue l'addestramento del modello (esempio semplificato).
-        Salva un file .pkl come segnaposto per il modello addestrato.
-        """
+        """Esegue l'addestramento del modello."""
         model_data = {
             "name": model_name,
             "epochs": epochs,
@@ -246,15 +208,7 @@ class Controller:
             raise RuntimeError(f"Errore nel salvataggio del modello: {e}")
 
     def train_voice_model(self, model_name: str) -> bool:
-        """
-        Addestra un modello vocale basato sul file audio di riferimento.
-
-        Args:
-            model_name: Nome del modello da creare
-
-        Returns:
-            bool: True se l'addestramento è avviato con successo, False altrimenti
-        """
+        """Addestra un modello vocale basato sul file audio di riferimento."""
         if not self.input_audio or not os.path.exists(self.input_audio):
             self._update_status("Errore: Nessun file audio di riferimento caricato")
             return False
@@ -264,23 +218,17 @@ class Controller:
         self._update_progress(0.0)
 
         try:
-            # Esegui in un thread separato per non bloccare l'UI
             def worker():
                 try:
-                    # Carica e preprocessa l'audio
                     audio_data = self.audio_processor.load_audio(self.input_audio)
                     self._update_progress(0.1)
 
-                    # Estrai caratteristiche
                     features = self.feature_extractor.extract_features(audio_data)
                     self._update_progress(0.2)
 
-                    # Addestra il modello
                     model_path = os.path.join(self.model_dir, f"{model_name}")
 
-                    # Funzione di callback per aggiornare il progresso
                     def progress_callback(progress):
-                        # Scala il progresso tra 0.2 e 0.9
                         scaled_progress = 0.2 + (progress * 0.7)
                         self._update_progress(scaled_progress)
 
@@ -310,44 +258,40 @@ class Controller:
             return False
 
     def synthesize_speech(self, model_name: str, text: str, output_file: Optional[str] = None) -> bool:
-        """
-        Sintetizza il parlato a partire dal testo utilizzando il modello vocale specificato.
+        """Sintetizza il parlato a partire dal testo, usando il modello specificato."""
 
-        Args:
-            model_name: Nome del modello da utilizzare
-            text: Testo da sintetizzare
-            output_file: Percorso del file di output (opzionale)
+        # Percorso del modello vocale
+        model_path = os.path.join(self.model_dir, model_name)
 
-        Returns:
-            bool: True se la sintesi è avviata con successo, False altrimenti
-        """
-        model_path = os.path.join(self.model_dir, f"{model_name}")
+        # Verifica che il modello esista
         if not os.path.exists(model_path):
             self._update_status(f"Errore: Modello {model_name} non trovato")
             return False
 
+        # Verifica che il testo non sia vuoto
         if not text:
             self._update_status("Errore: Nessun testo da sintetizzare")
             return False
 
+        # Aggiorna lo stato iniziale
         self._update_state(ProcessState.SYNTHESIZING)
-        self._update_status(f"Sintesi vocale in corso")
+        self._update_status("Sintesi vocale in corso")
         self._update_progress(0.0)
 
         try:
-            # Esegui in un thread separato per non bloccare l'UI
-            def worker(output_file=None):
+            # Funzione di sintesi eseguita in un thread separato
+            def worker():
                 try:
-                    # Genera un nome di file se non specificato
-                    if not output_file:
-                        timestamp = int(time.time())
-                        output_file = os.path.join(self.output_dir, f"synthesis_{timestamp}.wav")
+                    # Se non specificato, genera il nome automatico del file di output
+                    out_file = output_file or os.path.join(
+                        self.output_dir, f"synthesis_{int(time.time())}.wav"
+                    )
 
-                    # Funzione di callback per aggiornare il progresso
+                    # Callback per aggiornare la barra di progresso
                     def progress_callback(progress):
                         self._update_progress(progress)
 
-                    # Sintetizza il parlato
+                    # Avvia la sintesi vocale con il modello selezionato
                     audio_data = self.synthesizer.synthesize(
                         text=text,
                         model_name=model_name,
@@ -355,41 +299,38 @@ class Controller:
                         progress_callback=progress_callback
                     )
 
-                    # Salva l'audio
-                    self.audio_processor.save_audio(audio_data, output_file)
+                    # Salva il file audio .wav
+                    self.audio_processor.save_audio(audio_data, out_file)
 
+                    # Aggiorna stato e barra di progresso al termine
                     self._update_progress(1.0)
                     self._update_state(ProcessState.COMPLETED)
-                    self._update_status(f"Sintesi vocale completata: {os.path.basename(output_file)}")
+                    self._update_status(f"Sintesi vocale completata: {os.path.basename(out_file)}")
 
-                    # Riproduci l'audio
-                    self.playback.play(output_file)
-
+                    # Riproduce l’audio generato
+                    self.playback.play(out_file)
                     return True
+
                 except Exception as e:
+                    # Gestione errori durante la sintesi vocale
                     self.logger.error(f"Errore durante la sintesi vocale: {e}")
                     self._update_state(ProcessState.ERROR)
                     self._update_status(f"Errore: {str(e)}")
                     return False
 
+            # Esegue il worker in un thread separato per non bloccare la GUI
             self._run_in_thread(worker)
             return True
+
         except Exception as e:
+            # Gestione errori generali
             self.logger.error(f"Errore durante l'avvio della sintesi: {e}")
             self._update_state(ProcessState.ERROR)
             self._update_status(f"Errore: {str(e)}")
             return False
 
     def play_audio(self, file_path: str) -> Optional[bool]:
-        """
-        Riproduce un file audio.
-
-        Args:
-            file_path: Percorso del file audio
-
-        Returns:
-            bool: True se la riproduzione è avviata con successo, False altrimenti
-        """
+        """Riproduce un file audio."""
         if not os.path.exists(file_path):
             self._update_status(f"Errore: File {file_path} non trovato")
             return False
@@ -404,12 +345,7 @@ class Controller:
             return None
 
     def stop_playback(self) -> bool:
-        """
-        Interrompe la riproduzione audio in corso.
-
-        Returns:
-            bool: True se l'interruzione è riuscita, False altrimenti
-        """
+        """Interrompe la riproduzione audio in corso."""
         try:
             self.playback.stop()
             self._update_status("Riproduzione interrotta")
@@ -420,6 +356,7 @@ class Controller:
             return False
 
     def get_available_models(self):
+        """Restituisce i modelli disponibili."""
         models = []
 
         if not os.path.isdir(self.model_dir):
@@ -440,42 +377,32 @@ class Controller:
                     except Exception as e:
                         if self.debug:
                             print(f"Errore nella lettura dei metadati per {name}: {e}")
-                        continue  # ignora directory con metadati corrotti
+                        continue
 
         return models
 
     def _run_in_thread(self, target_function):
-        """
-        Esegue una funzione in un thread separato.
-
-        Args:
-        target_function: Funzione da eseguire
-        """
-        # Interrompi eventuali thread in esecuzione
+        """Esegue una funzione in un thread separato."""
         self.stop_requested = True
         if self.worker_thread and self.worker_thread.is_alive():
             self.worker_thread.join(timeout=1.0)
 
-            # Avvia un nuovo thread
-            self.stop_requested = False
-            self.worker_thread = threading.Thread(target=target_function)
-            self.worker_thread.daemon = True
-            self.worker_thread.start()
+        self.stop_requested = False
+        self.worker_thread = threading.Thread(target=target_function)
+        self.worker_thread.daemon = True
+        self.worker_thread.start()
 
     def cleanup(self):
         """Esegue la pulizia delle risorse prima della chiusura."""
         self.logger.info("Pulizia delle risorse")
 
-        # Interrompi eventuali thread in esecuzione
         self.stop_requested = True
         if self.worker_thread and self.worker_thread.is_alive():
             self.worker_thread.join(timeout=1.0)
 
-        # Ferma la riproduzione audio
         if self.playback:
             self.playback.stop()
 
-        # Libera le risorse CUDA
         if self.voice_model:
             self.voice_model.cleanup()
 
@@ -485,9 +412,9 @@ class Controller:
         self.logger.info("Pulizia completata")
 
     def cancel_processing(self):
-        """Metodo per interrompere un'elaborazione in corso."""
+        """Interrompe un'elaborazione in corso."""
         self.processing_cancelled = True
-        logging.getLogger("YukiAI.controller").info("Elaborazione annullata dall'utente")
+        self.logger.info("Elaborazione annullata dall'utente")
 
     def set_audio_device(self, device_id):
         """Imposta il dispositivo audio di output."""
@@ -498,4 +425,3 @@ class Controller:
         except Exception as e:
             self.logger.error(f"Errore nell'impostazione del dispositivo audio: {e}")
             raise
-

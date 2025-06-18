@@ -27,7 +27,7 @@
 3. **Installazione di AI Parlante**
    ```
    # Estrai il file ZIP in una directory a tua scelta
-   cd percorso/ai_parlante
+   cd percorso/TestYuki
    
    # Crea un ambiente virtuale
    python -m venv venv

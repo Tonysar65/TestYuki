@@ -5,7 +5,7 @@ Test semplificato per verificare le correzioni del salvataggio del modello.
 import os
 import tempfile
 import json
-
+import unittest
 
 def simulate_save_model(model_path):
     """Simula il salvataggio del modello con la logica corretta."""

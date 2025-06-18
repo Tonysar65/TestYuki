@@ -27,7 +27,7 @@ class SettingsTab(QWidget):
 
         self._create_ui()
         self._load_settings()
-        # self._connect_signals()
+        self._connect_signals()
 
         self.logger.info("Scheda impostazioni inizializzata")
 
@@ -40,29 +40,34 @@ class SettingsTab(QWidget):
         # Scheda Generale
         general_tab = QWidget()
         general_layout = QFormLayout(general_tab)
+
+        # Directory di output
         general_layout.addRow(QLabel("Directory di output:"))
-        output_layout_output = QHBoxLayout()
+        output_layout = QHBoxLayout()
         self.output_dir_edit = QLineEdit()
         self.output_dir_edit.setReadOnly(True)
         self.browse_output_button = QPushButton("Sfoglia...")
-        output_layout_output.addWidget(self.output_dir_edit)
-        output_layout_output.addWidget(self.browse_output_button)
-        general_layout.addRow(output_layout_output)
+        output_layout.addWidget(self.output_dir_edit)
+        output_layout.addWidget(self.browse_output_button)
+        general_layout.addRow(output_layout)
 
+        # Directory dei modelli
         general_layout.addRow(QLabel("Directory dei modelli:"))
-        models_layout_modelli = QHBoxLayout()
+        models_layout = QHBoxLayout()
         self.models_dir_edit = QLineEdit()
         self.models_dir_edit.setReadOnly(True)
         self.browse_models_button = QPushButton("Sfoglia...")
-        models_layout_modelli.addWidget(self.models_dir_edit)
-        models_layout_modelli.addWidget(self.browse_models_button)
-        general_layout.addRow(models_layout_modelli)
+        models_layout.addWidget(self.models_dir_edit)
+        models_layout.addWidget(self.browse_models_button)
+        general_layout.addRow(models_layout)
 
+        # Formato di output
         general_layout.addRow(QLabel("Formato di output predefinito:"))
         self.output_format_combo = QComboBox()
         self.output_format_combo.addItems(["WAV", "MP3", "FLAC", "OGG"])
         general_layout.addRow(self.output_format_combo)
 
+        # Frequenza di campionamento
         general_layout.addRow(QLabel("Frequenza di campionamento:"))
         self.sample_rate_combo = QComboBox()
         self.sample_rate_combo.addItems(["8000 Hz", "16000 Hz", "22050 Hz", "44100 Hz", "48000 Hz"])
@@ -73,6 +78,8 @@ class SettingsTab(QWidget):
         # Scheda Audio
         audio_tab = QWidget()
         audio_layout = QFormLayout(audio_tab)
+
+        # Dispositivi audio
         audio_layout.addRow(QLabel("Dispositivo di input:"))
         self.input_device_combo = QComboBox()
         self._populate_audio_devices(self.input_device_combo, 'input')
@@ -83,6 +90,7 @@ class SettingsTab(QWidget):
         self._populate_audio_devices(self.output_device_combo, 'output')
         audio_layout.addRow(self.output_device_combo)
 
+        # Volume
         audio_layout.addRow(QLabel("Volume di riproduzione:"))
         volume_layout = QHBoxLayout()
         self.volume_slider = QSlider(Qt.Horizontal)
@@ -92,11 +100,14 @@ class SettingsTab(QWidget):
         volume_layout.addWidget(self.volume_slider)
         volume_layout.addWidget(self.volume_label)
         audio_layout.addRow(volume_layout)
+
         settings_tabs.addTab(audio_tab, "Audio")
 
         # Scheda Modello
         model_tab = QWidget()
         model_layout = QFormLayout(model_tab)
+
+        # Parametri del modello
         model_layout.addRow(QLabel("Dimensione del modello:"))
         self.model_size_combo = QComboBox()
         self.model_size_combo.addItems(["Piccolo", "Medio", "Grande"])
@@ -108,6 +119,7 @@ class SettingsTab(QWidget):
         self.epochs_spin.setValue(100)
         model_layout.addRow(self.epochs_spin)
 
+        # Opzioni GPU
         self.use_cuda_check = QCheckBox("Utilizza CUDA (se disponibile)")
         model_layout.addRow(self.use_cuda_check)
 
@@ -120,9 +132,11 @@ class SettingsTab(QWidget):
         advanced_tab = QWidget()
         advanced_layout = QFormLayout(advanced_tab)
 
+        # Debug
         self.debug_mode_check = QCheckBox("Modalità debug")
         advanced_layout.addRow(self.debug_mode_check)
 
+        # Parametri avanzati
         advanced_layout.addRow(QLabel("Dimensione del batch:"))
         self.batch_size_spin = QSpinBox()
         self.batch_size_spin.setRange(1, 64)
@@ -153,36 +167,42 @@ class SettingsTab(QWidget):
         buttons_layout.addWidget(self.save_button)
         buttons_layout.addWidget(self.apply_button)
         main_layout.addLayout(buttons_layout)
-        main_layout.addStretch()
 
-    @staticmethod
-    def _populate_audio_devices(combo_box, device_type):
+    def _populate_audio_devices(self, combo_box, device_type):
         """Popola il combobox con i dispositivi audio disponibili."""
         combo_box.clear()
         combo_box.addItem("Dispositivo predefinito", -1)
-        for i, device in enumerate(sd.query_devices()):
-            if device_type == 'input' and device['max_input_channels'] > 0:
-                combo_box.addItem(f"{i}: {device['name']}", i)
-            elif device_type == 'output' and device['max_output_channels'] > 0:
-                combo_box.addItem(f"{i}: {device['name']}", i)
 
-    @staticmethod
-    def _select_device(combo_box, device_index):
+        try:
+            devices = sd.query_devices()
+            for i, device in enumerate(devices):
+                if device_type == 'input' and device['max_input_channels'] > 0:
+                    combo_box.addItem(f"{i}: {device['name']}", i)
+                elif device_type == 'output' and device['max_output_channels'] > 0:
+                    combo_box.addItem(f"{i}: {device['name']}", i)
+        except Exception as e:
+            self.logger.error(f"Errore durante il caricamento dei dispositivi audio: {e}")
+
+    def _select_device(self, combo_box, device_index):
         """Seleziona un dispositivo nel combobox."""
         for i in range(combo_box.count()):
             if combo_box.itemData(i) == device_index:
                 combo_box.setCurrentIndex(i)
                 break
 
-    '''def _connect_signals(self):
+    def _connect_signals(self):
         """Connette i segnali."""
+        # Pulsanti
         self.browse_output_button.clicked.connect(self._on_browse_output_clicked)
         self.browse_models_button.clicked.connect(self._on_browse_models_clicked)
-        self.volume_slider.valueChanged.connect(self._on_volume_changed)
         self.reset_button.clicked.connect(self._on_reset_clicked)
         self.save_button.clicked.connect(self._on_save_clicked)
         self.apply_button.clicked.connect(self._on_apply_clicked)
 
+        # Controlli
+        self.volume_slider.valueChanged.connect(self._on_volume_changed)
+
+        # Monitoraggio cambiamenti
         for widget in self.findChildren((QComboBox, QLineEdit, QSlider, QCheckBox, QSpinBox)):
             if isinstance(widget, QComboBox):
                 widget.currentIndexChanged.connect(self._on_setting_changed)
@@ -193,39 +213,53 @@ class SettingsTab(QWidget):
             elif isinstance(widget, QCheckBox):
                 widget.stateChanged.connect(self._on_setting_changed)
             elif isinstance(widget, QSpinBox):
-                widget.valueChanged.connect(self._on_setting_changed)'''
+                widget.valueChanged.connect(self._on_setting_changed)
 
     def _on_browse_output_clicked(self):
+        """Gestisce il click sul pulsante per selezionare la directory di output."""
         directory = QFileDialog.getExistingDirectory(self, "Seleziona directory di output")
         if directory:
             self.output_dir_edit.setText(directory)
+            self._on_setting_changed()
 
     def _on_browse_models_clicked(self):
+        """Gestisce il click sul pulsante per selezionare la directory dei modelli."""
         directory = QFileDialog.getExistingDirectory(self, "Seleziona directory dei modelli")
         if directory:
             self.models_dir_edit.setText(directory)
+            self._on_setting_changed()
 
     def _on_volume_changed(self, value):
+        """Aggiorna l'etichetta del volume quando cambia il valore dello slider."""
         self.volume_label.setText(f"{value}%")
+        self._on_setting_changed()
 
     def _on_setting_changed(self):
+        """Abilita il pulsante Applica quando cambia un'impostazione."""
         self.apply_button.setEnabled(True)
 
     def _on_save_clicked(self):
+        """Salva le impostazioni."""
         self._apply_settings()
         if hasattr(self.controller, 'save_settings'):
-            self.controller.save_settings(self.current_settings)
-        QMessageBox.information(self, "Salvataggio", "Impostazioni salvate correttamente.")
-        self.apply_button.setEnabled(False)
+            try:
+                self.controller.save_settings(self.current_settings)
+                QMessageBox.information(self, "Salvataggio", "Impostazioni salvate correttamente.")
+                self.apply_button.setEnabled(False)
+            except Exception as e:
+                self.logger.error(f"Errore durante il salvataggio delle impostazioni: {e}")
+                QMessageBox.critical(self, "Errore", f"Impossibile salvare le impostazioni: {str(e)}")
 
     def _on_apply_clicked(self):
+        """Applica le impostazioni senza salvarle permanentemente."""
         self._apply_settings()
         self.settings_changed.emit(self.current_settings)
         self.apply_button.setEnabled(False)
 
     def _apply_settings(self):
-        """Applica le impostazioni correnti ai controlli."""
+        """Aggrega tutte le impostazioni in un dizionario."""
         sample_rate = int(self.sample_rate_combo.currentText().split()[0])
+
         self.current_settings = {
             'output_dir': self.output_dir_edit.text(),
             'model_dir': self.models_dir_edit.text(),
@@ -247,31 +281,50 @@ class SettingsTab(QWidget):
     def _load_settings(self):
         """Carica le impostazioni esistenti."""
         if hasattr(self.controller, 'get_settings'):
-            settings = self.controller.get_settings()
-            self.output_dir_edit.setText(settings.get('output_dir', ''))
-            self.models_dir_edit.setText(settings.get('model_dir', ''))
-            self.output_format_combo.setCurrentText(settings.get('output_format', 'WAV'))
-            self.sample_rate_combo.setCurrentText(f"{settings.get('sample_rate', 22050)} Hz")
-            self._select_device(self.input_device_combo, settings.get('input_device', -1))
-            self._select_device(self.output_device_combo, settings.get('output_device', -1))
-            self.volume_slider.setValue(settings.get('volume', 80))
-            self.model_size_combo.setCurrentText(settings.get('model_size', 'Medio'))
-            self.epochs_spin.setValue(settings.get('epochs', 100))
-            self.use_cuda_check.setChecked(settings.get('use_cuda', True))
-            self.mixed_precision_check.setChecked(settings.get('mixed_precision', True))
-            self.debug_mode_check.setChecked(settings.get('debug_mode', False))
-            self.batch_size_spin.setValue(settings.get('batch_size', 8))
-            self.fft_size_combo.setCurrentText(str(settings.get('fft_size', 1024)))
-            self.hop_length_combo.setCurrentText(str(settings.get('hop_length', 256)))
+            try:
+                settings = self.controller.get_settings()
+
+                # Impostazioni generali
+                self.output_dir_edit.setText(settings.get('output_dir', ''))
+                self.models_dir_edit.setText(settings.get('model_dir', ''))
+                self.output_format_combo.setCurrentText(settings.get('output_format', 'WAV'))
+                self.sample_rate_combo.setCurrentText(f"{settings.get('sample_rate', 22050)} Hz")
+
+                # Impostazioni audio
+                self._select_device(self.input_device_combo, settings.get('input_device', -1))
+                self._select_device(self.output_device_combo, settings.get('output_device', -1))
+                self.volume_slider.setValue(settings.get('volume', 80))
+
+                # Impostazioni modello
+                self.model_size_combo.setCurrentText(settings.get('model_size', 'Medio'))
+                self.epochs_spin.setValue(settings.get('epochs', 100))
+                self.use_cuda_check.setChecked(settings.get('use_cuda', True))
+                self.mixed_precision_check.setChecked(settings.get('mixed_precision', True))
+
+                # Impostazioni avanzate
+                self.debug_mode_check.setChecked(settings.get('debug_mode', False))
+                self.batch_size_spin.setValue(settings.get('batch_size', 8))
+                self.fft_size_combo.setCurrentText(str(settings.get('fft_size', 1024)))
+                self.hop_length_combo.setCurrentText(str(settings.get('hop_length', 256)))
+
+            except Exception as e:
+                self.logger.error(f"Errore durante il caricamento delle impostazioni: {e}")
+                QMessageBox.warning(self, "Errore", f"Impossibile caricare le impostazioni: {str(e)}")
 
     def _on_reset_clicked(self):
         """Ripristina le impostazioni predefinite."""
         reply = QMessageBox.question(
-            self, "Conferma", "Sei sicuro di voler ripristinare le impostazioni predefinite?",
+            self, "Conferma",
+            "Sei sicuro di voler ripristinare le impostazioni predefinite?",
             QMessageBox.Yes | QMessageBox.No
         )
+
         if reply == QMessageBox.Yes:
-            if hasattr(self.controller, 'reset_to_defaults'):
-                self.controller.reset_to_defaults()
-            self._load_settings()
-            self.apply_button.setEnabled(True)
+            try:
+                if hasattr(self.controller, 'reset_to_defaults'):
+                    self.controller.reset_to_defaults()
+                self._load_settings()
+                self.apply_button.setEnabled(True)
+            except Exception as e:
+                self.logger.error(f"Errore durante il ripristino delle impostazioni: {e}")
+                QMessageBox.critical(self, "Errore", f"Impossibile ripristinare le impostazioni: {str(e)}")

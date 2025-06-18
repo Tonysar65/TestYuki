@@ -63,7 +63,7 @@ class AudioProcessor:
             }
 
             self.logger.info(f"File audio caricato: {os.path.basename(file_path)} "
-                             f"(durata: {duration:.2f}s, sr: {sr}Hz)")
+                            f"(durata: {duration:.2f}s, sr: {sr}Hz)")
 
             if self.debug:
                 self.logger.debug(f"Forma d'onda: shape={y.shape}, min={y.min():.4f}, max={y.max():.4f}")
@@ -120,7 +120,6 @@ class AudioProcessor:
         Returns:
             np.ndarray: Forma d'onda normalizzata
         """
-        # Evita la divisione per zero
         max_val = np.max(np.abs(y))
         if max_val > 0:
             y = y / max_val
@@ -138,7 +137,6 @@ class AudioProcessor:
             np.ndarray: Forma d'onda senza silenzio
         """
         try:
-            # Rimuovi il silenzio
             y_trimmed, _ = librosa.effects.trim(y, top_db=-threshold_db)
             return y_trimmed
         except Exception as e:
@@ -208,7 +206,7 @@ class AudioProcessor:
             segments.append(segment_data)
 
         self.logger.info(f"Audio diviso in {len(segments)} segmenti "
-                         f"(lunghezza: {segment_length}s, sovrapposizione: {overlap}s)")
+                        f"(lunghezza: {segment_length}s, sovrapposizione: {overlap}s)")
 
         return segments
 
@@ -225,17 +223,12 @@ class AudioProcessor:
         """
         try:
             import noisereduce as nr
-
-            # Applica la riduzione del rumore
             y_reduced = nr.reduce_noise(y=y, sr=sr)
-
             self.logger.info("Riduzione del rumore applicata")
             return y_reduced
-
         except ImportError:
             self.logger.warning("Libreria noisereduce non disponibile. Utilizzo dell'audio originale.")
             return y
         except Exception as e:
             self.logger.warning(f"Errore durante la riduzione del rumore: {e}. Utilizzo dell'audio originale.")
             return y
-

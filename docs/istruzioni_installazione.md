@@ -80,14 +80,14 @@ Questo documento fornisce istruzioni dettagliate per l'installazione di AI Parla
 
 1. Crea una directory per l'applicazione:
    ```
-   mkdir C:\AI_Parlante
+   mkdir C:\TestYuki
    ```
 
 2. Estrai il file ZIP di AI Parlante nella directory creata
 
 3. Apri un prompt dei comandi (cmd) e naviga alla directory dell'applicazione:
    ```
-   cd C:\AI_Parlante
+   cd C:\TestYuki
    ```
 
 ### 4.2. Creazione dell'Ambiente Virtuale
