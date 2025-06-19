@@ -4,126 +4,200 @@ Un'applicazione Python per la creazione di un'intelligenza artificiale parlante 
 
 ## Requisiti minimi di sistema
 
-- **Sistema Operativo**: Windows 10
-- **GPU**: NVIDIA GeForce GTX 1060 3GB o superiore
-- **Python**: 3.9 o superiore max 3.11
+### Hardware
+- **GPU**: NVIDIA GeForce GTX 1060 3GB o superiore (consigliato RTX 2060+ per prestazioni migliori)
+- **RAM**: 8GB (16GB consigliati)
+- **Spazio disco**: 10GB liberi (SSD consigliato)
+
+### Software
+- **Python**: 3.9 o superiore (max 3.11)
 - **CUDA Toolkit**: 11.3 o compatibile
 - **cuDNN**: Versione compatibile con CUDA Toolkit
 
 ## Installazione
 
-```bash
-pip install -r requirements.txt
-```
+### Windows 10
 
-### 1. Installazione di Python 3.9 o superiore max 3.11
-
-Se non hai già Python 3.9 installato:
-
+#### 1. Installazione di Python
 1. Scarica Python 3.9 dal [sito ufficiale](https://www.python.org/downloads/release/python-390/)
-2. Durante l'installazione, assicurati di selezionare "Add Python 3.9 to PATH"
-3. Completa l'installazione seguendo le istruzioni a schermo
+2. Durante l'installazione:
+   - Seleziona "Add Python 3.9 to PATH"
+   - Clicca su "Customize installation" e assicurati che "pip" sia selezionato
+3. Completa l'installazione seguendo le istruzioni
 
-### 2. Installazione di CUDA Toolkit e cuDNN
+#### 2. Installazione driver e toolkit NVIDIA
+1. Aggiorna i driver GPU dal [sito NVIDIA](https://www.nvidia.com/Download/index.aspx)
+2. Installa [CUDA Toolkit 11.3](https://developer.nvidia.com/cuda-11-3-0-download-archive)
+3. Installa [cuDNN compatibile](https://developer.nvidia.com/cudnn) (copiare i file nella cartella CUDA)
 
-Per sfruttare l'accelerazione GPU NVIDIA:
-
-1. Scarica e installa [NVIDIA CUDA Toolkit 11.3](https://developer.nvidia.com/cuda-11.3.0-download-archive)
-2. Scarica [cuDNN compatibile con CUDA 11.3](https://developer.nvidia.com/cudnn)
-3. Estrai i file cuDNN e copia i contenuti nelle rispettive directory CUDA
-
-### 3. Configurazione dell'Ambiente Virtuale
-
-```bash
-# Crea una directory per il progetto (se non stai già usando quella scaricata)
-mkdir TestYukiAi
-cd TestYukiAi
-
-# Crea un ambiente virtuale
+#### 3. Configurazione ambiente
+```powershell
+# Crea e attiva ambiente virtuale
 python -m venv venv
-
-# Attiva l'ambiente virtuale
 venv\Scripts\activate
-
-# Installa le dipendenze
-pip install -r requirements.txt
 ```
 
-### 4. Installazione di NVIDIA NeMo (opzionale, per modelli avanzati)
-
-```bash
+# Installa dipendenze
+```
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+# Installazione opzionale per modelli avanzati
+```
 pip install nemo_toolkit[all]
 ```
+Ubuntu 22.04 LTS
+1. Preparazione sistema
+bash
 
-## Funzionalità
+# Aggiorna sistema
+```
+sudo apt update && sudo apt upgrade -y
+```
+# Installa driver NVIDIA
+```
+sudo ubuntu-drivers autoinstall
+sudo reboot
+```
+# Verifica installazione driver
+```
+nvidia-smi
+```
+2. Installazione CUDA e cuDNN
+bash
 
-- Registrazione audio
-- Riproduzione audio
-- Estrazione delle caratteristiche audio
-- Creazione e simulazione di modelli neurali
-
-### Avvio dell'Applicazione
-
+# Installa CUDA 11.3
 ```bash
-# Assicurati che l'ambiente virtuale sia attivato
-venv\Scripts\activate
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
+sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub
+sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /"
+sudo apt-get update
+sudo apt-get -y install cuda-11-3
+```
 
-# Avvia l'applicazione
+# Configura environment
+```bash
+echo 'export PATH=/usr/local/cuda-11.3/bin:$PATH' >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH=/usr/local/cuda-11.3/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
+source ~/.bashrc
+```
+
+# Verifica CUDA
+```bash
+nvcc --version
+```
+3. Installazione dipendenze
+# Dipendenze di sistema
+```bash
+sudo apt install -y python3-pip python3-venv build-essential \portaudio19-dev libasound2-dev libjack-dev ffmpeg
+```
+# Configurazione ambiente Python
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+Utilizzo dell'Applicazione
+Avvio
+# Windows
+```bash
+venv\Scripts\activate
 python main.py
 ```
 
-### Clonazione di una Voce
+# Linux
+```bash
+source venv/bin/activate
+python main.py
+```
 
-1. Avvia l'applicazione
-2. Nella scheda "Clonazione Vocale", carica un file audio di riferimento
-3. Clicca su "Analizza Audio" per estrarre le caratteristiche vocali
-4. Clicca su "Addestra Modello" per creare un modello vocale personalizzato
-5. Attendi il completamento dell'addestramento
+Funzionalità principali
 
-### Sintesi Vocale
+    Clonazione Vocale:
 
-1. Nella scheda "Sintesi Vocale", seleziona il modello vocale addestrato
-2. Inserisci il testo da sintetizzare
-3. Clicca su "Sintetizza" per generare l'audio
-4. Utilizza i controlli di riproduzione per ascoltare l'audio generato
-5. Clicca su "Salva" per salvare l'audio generato come file
+        Carica un file audio campione (formati supportati: WAV, MP3, FLAC)
 
-## Risoluzione dei Problemi
+        Analizza le caratteristiche vocali
 
-### Errori CUDA
+        Addestra un modello personalizzato
 
-- Assicurati che i driver NVIDIA siano aggiornati
-- Verifica che CUDA Toolkit e cuDNN siano installati correttamente
-- Controlla che la versione di PyTorch sia compatibile con la tua versione di CUDA
+    Sintesi Vocale:
 
-### Problemi di Memoria
+        Seleziona un modello addestrato
 
-La GTX 1060 3GB ha una memoria limitata. Se riscontri errori di memoria:
+        Inserisci il testo da convertire in parlato
 
-- Riduci la dimensione del batch durante l'addestramento
-- Utilizza modelli più leggeri o versioni quantizzate
-- Chiudi altre applicazioni che utilizzano la GPU
+        Regola parametri (tono, velocità, enfasi)
 
-### Problemi Audio
+        Esporta l'audio generato
 
-- Verifica che i dispositivi audio siano configurati correttamente
-- Assicurati che PyAudio sia installato correttamente
-- Su Windows, potrebbe essere necessario installare Visual C++ Build Tools
+    Strumenti Audio:
 
-## Licenza
+        Registrazione diretta
 
-Questo progetto è rilasciato con licenza MIT per uso esclusivamente non commerciale. 
-È consentito l'uso personale, educativo e di ricerca, ma è vietato qualsiasi utilizzo commerciale 
+        Editing base degli audio
+
+        Analisi spettrale
+
+ Risoluzione dei Problemi comuni Windows
+
+    Errori CUDA: Verificare la compatibilità driver/CUDA con nvidia-smi
+
+    Mancanza MSVC: Installare Build Tools per Visual Studio
+
+    Problemi audio: Reinstallare PyAudio con pip install --force-reinstall pyaudio
+
+Problemi comuni Linux
+
+    Permessi audio:
+```bash
+sudo usermod -a -G audio $USER
+sudo reboot
+```
+
+Errori libreria:
+```bash
+    sudo apt install libsm6 libxext6 libxrender-dev
+```
+
+Ottimizzazione prestazioni
+
+    Ridurre la dimensione del batch in config.yaml per GPU con poca VRAM
+
+    Usare modelli quantizzati per sistemi meno potenti
+
+    Chiudere altre applicazioni che utilizzano la GPU durante l'addestramento
+
+Licenza
+
+Questo progetto è rilasciato con licenza MIT per uso esclusivamente non commerciale.
+È consentito l'uso personale, educativo e di ricerca, ma è vietato qualsiasi utilizzo commerciale
 senza autorizzazione esplicita.
 
 Vedi il file LICENSE per i dettagli completi.
+Riconoscimenti
 
-## Riconoscimenti
+    NVIDIA per CUDA e cuDNN
 
-Questo progetto utilizza diverse librerie open source e modelli pre-addestrati. Tutti i riconoscimenti sono elencati nel file CREDITS.md.
+    PyTorch per il framework di deep learning
 
-## Codice
+    Comunità open source per le librerie audio
 
-Alcune parti del codice sono state controllate o realizzate in minima parte con l'IA come ChatGPT e DeepSeek.
-Il codice risulta avere ancora delle imperfezioni, ci sono molti avvisi da controllare ed eliminare e qualche funzione che deve essere perfezionata.
-C'è ancora del codice duplicato da eliminare.
+    Tutti i contributori elencati in CREDITS.md
+
+Note sullo Sviluppo
+
+Il codice include alcune parti sviluppate con l'assistenza di strumenti AI (ChatGPT, DeepSeek) e presenta:
+
+    Alcuni warning da risolvere
+
+    Funzioni da ottimizzare
+
+    Codice duplicato da eliminare
+
+    Test da implementare
+
+Contributi e pull request sono benvenuti per migliorare il progetto.
